@@ -32,13 +32,18 @@ contract Raffle {
   error Raffle__NotEnoughEthSent();
 
   uint256 private immutable i_entranceFee;
+  // @dev Duration of the lottery in seconds
+  uint256 private immutable i_interval;
   address payable[] private s_players;
+  uint256 private s_lastTimeStamp;
 
   /** Events */
   event EnteredRaffle(address indexed player);
 
-  constructor(uint256 entranceFee) {
+  constructor(uint256 entranceFee, uint256 interval) {
     i_entranceFee = entranceFee;
+    i_interval = interval;
+    s_lastTimeStamp = block.timestamp;
   }
 
   function enterRaffle() external payable {
@@ -50,8 +55,8 @@ contract Raffle {
     emit EnteredRaffle(msg.sender);
   }
 
-  function pickWinner() public{
-
+  function pickWinner() external{
+    block.timestamp - s_lastTimeStamp > i_interval;
   }
 
   /** Getter Functions */
