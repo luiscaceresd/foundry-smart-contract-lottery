@@ -23,4 +23,23 @@ contract HelperConfig is Script {
       callbackGasLimit: 500000
     });
   }
+
+  NetworkConfig public activeNetworkConfig;
+
+  constructor() {
+    if (block.chainid == 11155111){
+      activeNetworkConfig = getSepoliaEthConfig();
+    } else {
+      activeNetworkConfig = getOrCreateAnvilEthConfig();
+    }
+  }
+
+  function getOrCreateAnvilEthConfig() 
+    public 
+    returns (NetworkConfig memory) 
+  {
+    if (activeNetworkConfig.vrfCoordinator != address(0)) {
+      return activeNetworkConfig;
+    }
+  }
 }
