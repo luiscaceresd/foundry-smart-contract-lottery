@@ -6,8 +6,8 @@ import {Raffle} from "../src/Raffle.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployRaffle is Script {
-  function run() external returns (Raffle) {
-    HelperConfig helperConfig = HelperConfig();
+  function run() external returns (Raffle, HelperConfig) {
+    HelperConfig helperConfig = new HelperConfig();
     (
       uint256 entranceFee,
       uint256 interval,
@@ -26,6 +26,6 @@ contract DeployRaffle is Script {
       subscriptionId,
       callbackGasLimit
     );
-    return raffle;
+    return (raffle, helperConfig);
   }
 }
