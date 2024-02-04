@@ -114,4 +114,29 @@ contract RaffleTest is Test {
         (bool upkeepNeeded, ) = raffle.checkUpkeep("");
         assert(upkeepNeeded);
     }
+
+    // performUpKeep
+    function testPerformUpkeepCanOnlyRunIfCheckUpKeepIsTrue() public {
+        vm.prank(PLAYER);
+        raffle.enterRaffle{value: entranceFee}();
+        vm.warp(block.timestamp + interval);
+        vm.roll(block.number + 1);
+
+        raffle.performUpkeep("");
+    }
+
+    function testPerformUpkeepRevertsIfCheckUpKeepIsFalse() public {
+        uint256 currentBalance = 0;
+        uint256 currentPlayers = 0;
+        uint256 raffleState = 0;
+        vm.expectRevert(
+             abi.encodeWithSelector(Raffle.Raffle__UpkeepNotNeeded.selector, 
+             currentBalance, 
+             currentPlayers, 
+             raffleState)
+        );   
+        raffle.performUpkeep("");
+    }
+
+
 }
