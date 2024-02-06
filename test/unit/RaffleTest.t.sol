@@ -6,6 +6,7 @@ import {Raffle} from "../../src/Raffle.sol";
 import {Test, console} from "forge-std/Test.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
 import {Vm} from "forge-std/Vm.sol";
+import {VRFCoordinatorV2Mock} from "@chainlink/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol";
 
 contract RaffleTest is Test {
     /* Events */
@@ -150,11 +151,11 @@ contract RaffleTest is Test {
     }
 
     // What if I need to test using the output of an event?
-    function testPerformUpkeepUpdatesRaffleStateAndEmitsRequestId() 
-        public 
+    function testPerformUpkeepUpdatesRaffleStateAndEmitsRequestId()
+        public
         raffleEnteredAndTimePassed
     {
-        // Act 
+        // Act
         vm.recordLogs();
         raffle.performUpkeep(""); //emit requestId
         Vm.Log[] memory entries = vm.getRecordedLogs();
@@ -164,5 +165,18 @@ contract RaffleTest is Test {
 
         assert(uint256(requestId) > 0);
         assert(uint256(rState) == 1);
+    }
+
+    // FullfillRandomWords
+
+    function testFulfillRandomWordsCanOnlyBeCalledAfterPerformUpkeep(
+        uint256 randomRequestId
+    ) public raffleEnteredAndTimePassed {
+        // Arrange
+        vm.expectRevert("nonexistent request");
+        VRFCoordinatorV2Mock(vrfCoordinator).fulfillRandomWords(
+            randomRequestId,
+            address(raffle)
+        );
     }
 }
