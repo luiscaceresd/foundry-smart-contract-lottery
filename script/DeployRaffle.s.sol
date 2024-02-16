@@ -9,6 +9,7 @@ import {CreateSubscription, FundSubscription, AddConsumer} from "./Interactions.
 contract DeployRaffle is Script {
     function run() external returns (Raffle, HelperConfig) {
         HelperConfig helperConfig = new HelperConfig();
+        AddConsumer addConsumer = new AddConsumer();
         (
             uint256 entranceFee,
             uint256 interval,
@@ -48,7 +49,6 @@ contract DeployRaffle is Script {
         );
         vm.stopBroadcast();
 
-        AddConsumer addConsumer = new AddConsumer();
         addConsumer.addConsumer(
             address(raffle),
             vrfCoordinator,

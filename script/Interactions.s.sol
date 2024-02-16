@@ -85,6 +85,12 @@ contract FundSubscription is Script {
 }
 
 contract AddConsumer is Script {
+    // address private immutable i_raffle;
+
+    // constructor(address raffle) {
+    //     i_raffle = raffle;
+    // }
+
     function addConsumer(
         address raffle,
         address vrfCoordinator,
@@ -115,10 +121,10 @@ contract AddConsumer is Script {
     }
 
     function run() external {
-        address raffle = DevOpsTools.get_most_recent_deployment(
+        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment(
             "Raffle",
             block.chainid
         );
-        addConsumerUsingConfig(raffle);
+        addConsumerUsingConfig(mostRecentlyDeployed);
     }
 }
